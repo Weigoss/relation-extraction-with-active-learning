@@ -130,3 +130,4 @@ dmypy.json
 
 # mydefine
 pretrained/chinese-bert_chinese_wwm_pytorch/
+.idea/

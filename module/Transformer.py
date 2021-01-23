@@ -57,7 +57,7 @@ class TransformerAttention(nn.Module):
         attention_output = self.dense(attention_output)
         attention_output = self.dropout(attention_output)
         attention_output = self.layerNorm(attention_output + x)
-        outputs = (attention_output, ) + attention_outputs[1:]  # 后面是 attention weight
+        outputs = (attention_output,) + attention_outputs[1:]  # 后面是 attention weight
         return outputs
 
 
@@ -97,7 +97,7 @@ class TransformerLayer(nn.Module):
         attention_outputs = self.attention(hidden_states, key_padding_mask, attention_mask, head_mask)
         attention_output = attention_outputs[0]
         layer_output = self.output(attention_output)
-        outputs = (layer_output, ) + attention_outputs[1:]
+        outputs = (layer_output,) + attention_outputs[1:]
         return outputs
 
 
@@ -121,7 +121,7 @@ class Transformer(nn.Module):
         """
         if head_mask is not None:
             if head_mask.dim() == 1:
-                head_mask = head_mask.expand((self.num_hidden_layers, ) + head_mask.shape)
+                head_mask = head_mask.expand((self.num_hidden_layers,) + head_mask.shape)
         else:
             head_mask = [None] * self.num_hidden_layers
 
@@ -129,21 +129,21 @@ class Transformer(nn.Module):
         all_attentions = ()
         for i, layer_module in enumerate(self.layer):
             if self.output_hidden_states:
-                all_hidden_states = all_hidden_states + (hidden_states, )
+                all_hidden_states = all_hidden_states + (hidden_states,)
 
             layer_outputs = layer_module(hidden_states, key_padding_mask, attention_mask, head_mask[i])
             hidden_states = layer_outputs[0]
 
             if self.output_attentions:
-                all_attentions = all_attentions + (layer_outputs[1], )
+                all_attentions = all_attentions + (layer_outputs[1],)
 
         # Add last layer
         if self.output_hidden_states:
-            all_hidden_states = all_hidden_states + (hidden_states, )
+            all_hidden_states = all_hidden_states + (hidden_states,)
 
-        outputs = (hidden_states, )
+        outputs = (hidden_states,)
         if self.output_hidden_states:
-            outputs = outputs + (all_hidden_states, )
+            outputs = outputs + (all_hidden_states,)
         if self.output_attentions:
-            outputs = outputs + (all_attentions, )
+            outputs = outputs + (all_attentions,)
         return outputs  # last-layer hidden state, (all hidden states), (all attentions)

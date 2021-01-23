@@ -2,7 +2,7 @@ import torch
 from . import BasicModule
 from module import Embedding, CNN
 from module import Capsule as CapsuleLayer
-from utils import seq_len_to_mask, to_one_hot
+from utils.util import seq_len_to_mask, to_one_hot
 
 
 class Capsule(BasicModule):
@@ -38,8 +38,8 @@ class Capsule(BasicModule):
         m_plus, m_minus, loss_lambda = 0.9, 0.1, 0.5
 
         target = to_one_hot(target, self.num_relations)
-        max_l = (torch.relu(m_plus - predict))**2
-        max_r = (torch.relu(predict - m_minus))**2
+        max_l = (torch.relu(m_plus - predict)) ** 2
+        max_r = (torch.relu(predict - m_minus)) ** 2
         loss = target * max_l + loss_lambda * (1 - target) * max_r
         loss = torch.sum(loss, dim=-1)
 

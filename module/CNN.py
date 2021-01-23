@@ -98,7 +98,6 @@ class CNN(nn.Module):
         if self.pooling_strategy == 'max':
             xp = F.max_pool1d(x, kernel_size=x.size(2)).squeeze(2)
             # 等价于 xp = torch.max(x, dim=2)[0]
-
         elif self.pooling_strategy == 'avg':
             x_len = mask.squeeze().eq(0).sum(-1).unsqueeze(-1).to(torch.float).to(device=mask.device)
             xp = torch.sum(x, dim=-1) / x_len

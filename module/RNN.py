@@ -28,7 +28,6 @@ class RNN(nn.Module):
                        bias=True,
                        batch_first=True)
 
-        # 有bug
         # self._init_weights()
 
     def _init_weights(self):
@@ -71,9 +70,7 @@ class RNN(nn.Module):
         return output, hn
 
 
-
 if __name__ == '__main__':
-
     class Config(object):
         type_rnn = 'LSTM'
         input_size = 5
@@ -82,6 +79,7 @@ if __name__ == '__main__':
         dropout = 0.0
         last_layer_hn = False
         bidirectional = True
+
 
     config = Config()
     model = RNN(config)

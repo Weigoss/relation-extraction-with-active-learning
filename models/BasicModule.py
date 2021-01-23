@@ -25,7 +25,7 @@ class BasicModule(nn.Module):
         保存模型，默认使用“模型名字+时间”作为文件名
         '''
         time_prefix = time.strftime('%Y-%m-%d_%H-%M-%S')
-        prefix = os.path.join(cfg.cwd, 'checkpoints',time_prefix)
+        prefix = os.path.join(cfg.cwd, 'weights',time_prefix)
         os.makedirs(prefix, exist_ok=True)
         name = os.path.join(prefix, cfg.model_name + '_' + f'epoch{epoch}' + '.pth')
 

@@ -13,16 +13,17 @@ import data_select
 
 from utils.preprocess import preprocess
 from utils.dataset import CustomDataset, collate_fn
-from utils.trainer import train, validate
-from utils.util import manual_seed,load_pkl
+from trainer import train, validate
+from utils.util import manual_seed, load_pkl
 
 logger = logging.getLogger(__name__)
+
 
 @hydra.main(config_path='conf/config.yaml')
 def main(cfg):
     cwd = utils.get_original_cwd()
     cfg.cwd = cwd
-    # cfg.lm_file = cwd + '/pretrained/data'
+    cfg.lm_file = cwd + '/pretrained/data'
     cfg.pos_size = 2 * cfg.pos_limit + 2
     logger.info(f'\n{cfg.pretty()}')
 
@@ -44,7 +45,7 @@ def main(cfg):
         'ensemble_sample_by_weight': data_select.ensemble_sample_by_weight,
         'uncertain_diverse': data_select.ensemble_sample_by_uncertain_similar,
         'uncertain_similar': data_select.ensemble_sample_by_uncertain_diverse,
-        'multi_criterion_sampling':data_select.multi_criterion_sampling
+        'multi_criterion_sampling': data_select.multi_criterion_sampling
     }
 
     # device
@@ -77,15 +78,12 @@ def main(cfg):
     all_train_ds = load_pkl(train_data_path)
     random.shuffle(all_train_ds)
 
-    # TODO active learning params
     start_size, all_size, size, per_log_num = 4000, 9800, 200, 400
-    # start_size, all_size, size, per_log_num = len(all_train_ds), len(all_train_ds), 200, 400
     select_method = __Select__[cfg.select_method]
     pre_labels = None
     print(len(all_train_ds))
     cur_labeled_ds = all_train_ds[:start_size]
     unlabeled_ds = all_train_ds[start_size:]
-
 
     writer = SummaryWriter('tensorboard')
 
@@ -102,8 +100,6 @@ def main(cfg):
 
         train_dataloader = DataLoader(cur_labeled_ds, batch_size=cfg.batch_size, shuffle=True,
                                       collate_fn=collate_fn(cfg))
-        best_f1, best_epoch, es_loss, es_f1 = -1, 0, 1e8, -1
-        es_epoch, es_patience, best_es_epoch, best_es_f1, es_path, best_es_path = 0, 0, 0, -1, '', ''
         train_losses, valid_losses, one_f1_scores = [], [], []
         for epoch in range(1, cfg.epoch + 1):
             # 保证随机种子每一轮不一样
@@ -129,7 +125,6 @@ def main(cfg):
                 writer.add_scalars(f'valid/valid_f1_score_{len(cur_labeled_ds)}', {
                     'valid_f1_score': one_f1_scores[i]
                 }, i)
-            # writer.close()
 
         test_f1, test_loss = validate(-1, model, test_dataloader, criterion, device, cfg)
         test_f1_scores.append(test_f1)
@@ -157,6 +152,7 @@ def main(cfg):
 
 if __name__ == '__main__':
     import time
+
     # 查看显卡使用情况：nvidia-smi
     cur = time.time()
     main()

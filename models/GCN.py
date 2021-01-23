@@ -3,7 +3,6 @@ import torch.nn as nn
 from . import BasicModule
 from module import Embedding
 from module import GCN as GCNBlock
-from utils import seq_len_to_mask
 
 
 class GCN(BasicModule):

@@ -3,9 +3,9 @@ import logging
 from collections import OrderedDict
 from typing import List, Dict
 from transformers import BertTokenizer
-from serializer import Serializer
-from vocab import Vocab
-from utils import save_pkl, load_csv
+from utils.serializer import Serializer
+from utils.vocab import Vocab
+from utils.util import save_pkl, load_csv
 
 logger = logging.getLogger(__name__)
 

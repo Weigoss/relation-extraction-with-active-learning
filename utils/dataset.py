@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import Dataset
-from utils import load_pkl
+from utils.util import load_pkl
 
 
 def collate_fn(cfg):
